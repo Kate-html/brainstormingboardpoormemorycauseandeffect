@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainstorming Game - Causes & Effects of Poor Memory</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --cause-color: #2563eb;
+            --effect-color: #ea580c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        /* Topic Anchor Box */
+        .topic-banner {
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            border: 2px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .topic-banner .topic-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #4338ca;
+            margin-bottom: 4px;
+        }
+
+        .topic-banner h2 {
+            font-size: 1.8rem;
+            color: #1e1b4b;
+            margin-bottom: 12px;
+        }
+
+        .topic-banner .prompts {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+
+        .topic-banner .prompt-box {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid #c7d2fe;
+            color: #334155;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        /* Type Selector Segmented Control */
+        .type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .type-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            color: var(--text-muted);
+        }
+
+        .type-btn.cause.selected {
+            border-color: var(--cause-color);
+            background-color: #eff6ff;
+            color: var(--cause-color);
+        }
+
+        .type-btn.effect.selected {
+            border-color: var(--effect-color);
+            background-color: #fff7ed;
+            color: var(--effect-color);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-row input {
+            flex: 1;
+        }
+
+        /* Chip List */
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .chip {
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chip.cause {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1e40af;
+        }
+
+        .chip.effect {
+            background: #fff7ed;
+            border-color: #fed7aa;
+            color: #c2410c;
+        }
+
+        .chip-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+
+        .chip.cause .chip-badge {
+            background: #dbeafe;
+            color: #1e3a8a;
+        }
+
+        .chip.effect .chip-badge {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .chip-remove {
+            cursor: pointer;
+            color: #94a3b8;
+            font-weight: bold;
+        }
+
+        .chip-remove:hover {
+            color: #ef4444;
+        }
+
+        /* Word Cloud Display */
+        .word-cloud-box {
+            min-height: 350px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 30px;
+            background: #fafafa;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+        }
+
+        .cloud-word {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+            display: inline-block;
+            line-height: 1;
+        }
+
+        .cloud-word.cause { color: var(--cause-color); }
+        .cloud-word.effect { color: var(--effect-color); }
+
+        /* Data Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        /* Utilities */
+        .hidden {
+            display: none !important;
+        }
+
+        .badge {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Brainstorming Game</h1>
+            <p class="subtitle">Causes and Effects of Poor Memory</p>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="tab-student" onclick="switchTab('student')">Student Mode</button>
+            <button class="tab-btn" id="tab-teacher" onclick="switchTab('teacher')">Teacher Dashboard</button>
+        </div>
+
+        <!-- STUDENT MODE VIEW -->
+        <div id="view-student">
+            <!-- Central Topic Anchor Box -->
+            <div class="topic-banner">
+                <div class="topic-title">Central Topic</div>
+                <h2>🧠 POOR MEMORY</h2>
+                <div class="prompts">
+                    <div class="prompt-box">💡 <strong>Cause:</strong> <em>Why do people have poor memory?</em> (e.g., Lack of sleep, Stress)</div>
+                    <div class="prompt-box">⚡ <strong>Effect:</strong> <em>What happens because of poor memory?</em> (e.g., Forgetting keys, Low exam grades)</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="form-group">
+                    <label for="student-group-select">Select Your Group:</label>
+                    <select id="student-group-select" onchange="updateStudentGroupView()">
+                        <!-- Options generated by JS -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Is your idea a Cause or an Effect of Poor Memory?</label>
+                    <div class="type-selector">
+                        <button type="button" class="type-btn cause selected" id="type-cause" onclick="selectType('cause')">💡 Cause (Why it happens)</button>
+                        <button type="button" class="type-btn effect" id="type-effect" onclick="selectType('effect')">⚡ Effect (What happens after / Results)</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="idea-input">Enter Your Idea:</label>
+                    <div class="input-row">
+                        <input type="text" id="idea-input" placeholder="e.g. Lack of sleep, Stress, Forgetting appointments..." onkeydown="handleKeyPress(event)">
+                        <button class="btn btn-primary" onclick="submitIdea()">Add Idea</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <label>Your Group's Submitted Ideas (<span id="my-group-count">0</span>):</label>
+                    <div class="chips-container" id="student-chips">
+                        <!-- Student chips appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEACHER DASHBOARD VIEW -->
+        <div id="view-teacher" class="hidden">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                    <h2>Mentimeter-style Word Cloud</h2>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Filter:</span>
+                        <button class="filter-btn active" id="filter-all" onclick="setCloudFilter('all')">All</button>
+                        <button class="filter-btn" id="filter-cause" onclick="setCloudFilter('cause')">Causes Only (Blue)</button>
+                        <button class="filter-btn" id="filter-effect" onclick="setCloudFilter('effect')">Effects Only (Orange)</button>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary" onclick="loadSampleData()">Load Sample Data</button>
+                        <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+                    </div>
+                </div>
+                
+                <div class="word-cloud-box" id="word-cloud">
+                    <p style="color: var(--text-muted);">No words submitted yet. Start entering ideas in Student Mode or click 'Load Sample Data'!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>All Group Submissions & Data Check</h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Group & Students</th>
+                                <th>Total Ideas</th>
+                                <th>Submitted Ideas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacher-table-body">
+                            <!-- Table rows generated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const groupsData = [
+            {"id": 1, "name": "Group 1", "students": ["Mali", "Ploy", "Sunan", "Kittisak"]},
+            {"id": 2, "name": "Group 2", "students": ["Fah", "Anong", "Arun", "Arthit"]},
+            {"id": 3, "name": "Group 3", "students": ["Kanya", "Bua", "Somchai", "Korn"]},
+            {"id": 4, "name": "Group 4", "students": ["Kaeo", "Dao", "Ananda", "Chatree"]},
+            {"id": 5, "name": "Group 5", "students": ["Mind", "Nut", "Win", "Gun"]},
+            {"id": 6, "name": "Group 6", "students": ["Pim", "Fern", "Bank", "Top"]},
+            {"id": 7, "name": "Group 7", "students": ["Grace", "Kwankao", "Nat", "Pawarut"]},
+            {"id": 8, "name": "Group 8", "students": ["Lin", "Nok", "Tawan", "Chakrit"]},
+            {"id": 9, "name": "Group 9", "students": ["Tangmo", "Nan", "Narin", "Kla"]},
+            {"id": 10, "name": "Group 10", "students": ["Jan", "Som", "Poom", "Somsak"]}
+        ];
+
+        let submissions = []; // Format: { groupNum: 1, type: "cause", text: "Lack of sleep" }
+        let selectedType = "cause"; // "cause" or "effect"
+        let cloudFilter = "all"; // "all", "cause", or "effect"
+
+        function init() {
+            populateGroupDropdown();
+            renderTeacherTable();
+            updateStudentGroupView();
+        }
+
+        function populateGroupDropdown() {
+            const select = document.getElementById('student-group-select');
+            select.innerHTML = '';
+            groupsData.forEach(g => {
+                const option = document.createElement('option');
+                option.value = g.id;
+                option.textContent = `${g.name} (${g.students.join(', ')})`;
+                select.appendChild(option);
+            });
+        }
+
+        function selectType(type) {
+            selectedType = type;
+            document.getElementById('type-cause').classList.toggle('selected', type === 'cause');
+            document.getElementById('type-effect').classList.toggle('selected', type === 'effect');
+        }
+
+        function switchTab(tab) {
+            document.getElementById('tab-student').classList.toggle('active', tab === 'student');
+            document.getElementById('tab-teacher').classList.toggle('active', tab === 'teacher');
+            
+            document.getElementById('view-student').classList.toggle('hidden', tab !== 'student');
+            document.getElementById('view-teacher').classList.toggle('hidden', tab !== 'teacher');
+
+            if (tab === 'teacher') {
+                renderWordCloud();
+                renderTeacherTable();
+            }
+        }
+
+        // STUDENT INPUT FUNCTIONS
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') submitIdea();
+        }
+
+        function submitIdea() {
+            const input = document.getElementById('idea-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const groupNum = parseInt(document.getElementById('student-group-select').value);
+            submissions.push({ groupNum, type: selectedType, text });
+            input.value = '';
+            
+            updateStudentGroupView();
+        }
+
+        function removeIdea(index) {
+            submissions.splice(index, 1);
+            updateStudentGroupView();
+        }
+
+        function updateStudentGroupView() {
+            const groupNum = parseInt(document.getElementById('student-group-select').value);
+            const container = document.getElementById('student-chips');
+            container.innerHTML = '';
+
+            const mySubmissions = submissions.filter(s => s.groupNum === groupNum);
+            document.getElementById('my-group-count').textContent = mySubmissions.length;
+
+            submissions.forEach((item, globalIdx) => {
+                if (item.groupNum === groupNum) {
+                    const chip = document.createElement('div');
+                    chip.className = `chip ${item.type}`;
+                    const labelText = item.type === 'cause' ? 'Cause' : 'Effect';
+                    chip.innerHTML = `
+                        <span class="chip-badge">${labelText}</span>
+                        <span>${escapeHtml(item.text)}</span> 
+                        <span class="chip-remove" onclick="removeIdea(${globalIdx})">✕</span>
+                    `;
+                    container.appendChild(chip);
+                }
+            });
+        }
+
+        // TEACHER DASHBOARD FUNCTIONS
+        function setCloudFilter(filter) {
+            cloudFilter = filter;
+            document.getElementById('filter-all').classList.toggle('active', filter === 'all');
+            document.getElementById('filter-cause').classList.toggle('active', filter === 'cause');
+            document.getElementById('filter-effect').classList.toggle('active', filter === 'effect');
+            renderWordCloud();
+        }
+
+        function renderTeacherTable() {
+            const tbody = document.getElementById('teacher-table-body');
+            tbody.innerHTML = '';
+
+            groupsData.forEach(g => {
+                const groupSubmissions = submissions.filter(s => s.groupNum === g.id);
+                const tr = document.createElement('tr');
+                
+                const chipsHtml = groupSubmissions.map(s => {
+                    const labelText = s.type === 'cause' ? 'Cause' : 'Effect';
+                    return `<span class="chip ${s.type}" style="display:inline-flex; margin:2px;"><span class="chip-badge">${labelText}</span>${escapeHtml(s.text)}</span>`;
+                }).join(' ') || '<em style="color:#a1a1aa;">No ideas submitted yet</em>';
+
+                tr.innerHTML = `
+                    <td><strong>${g.name}</strong><br><small style="color:var(--text-muted);">${g.students.join(', ')}</small></td>
+                    <td><span class="badge">${groupSubmissions.length} ideas</span></td>
+                    <td>${chipsHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderWordCloud() {
+            const cloudContainer = document.getElementById('word-cloud');
+            cloudContainer.innerHTML = '';
+
+            let filteredSubmissions = submissions;
+            if (cloudFilter !== 'all') {
+                filteredSubmissions = submissions.filter(s => s.type === cloudFilter);
+            }
+
+            if (filteredSubmissions.length === 0) {
+                cloudContainer.innerHTML = `<p style="color: var(--text-muted);">No words found for this view. Enter ideas in Student Mode or click 'Load Sample Data'!</p>`;
+                return;
+            }
+
+            // Count frequency
+            const freqMap = {};
+            filteredSubmissions.forEach(s => {
+                const cleaned = s.text.trim().toLowerCase();
+                if (cleaned) {
+                    if (!freqMap[cleaned]) {
+                        freqMap[cleaned] = { count: 0, type: s.type };
+                    }
+                    freqMap[cleaned].count += 1;
+                }
+            });
+
+            const entries = Object.entries(freqMap);
+            const maxFreq = Math.max(...entries.map(([_, data]) => data.count), 1);
+
+            // Shuffle entries
+            entries.sort(() => Math.random() - 0.5);
+
+            entries.forEach(([word, data]) => {
+                const span = document.createElement('span');
+                span.className = `cloud-word ${data.type}`;
+                
+                const fontSize = 1 + (data.count / maxFreq) * 2.5;
+
+                span.style.fontSize = `${fontSize}rem`;
+                span.style.fontWeight = data.count > 1 ? '700' : '500';
+                const tagLabel = data.type === 'cause' ? 'CAUSE' : 'EFFECT';
+                span.title = `[${tagLabel}] Mentioned ${data.count} time(s)`;
+                span.textContent = capitalizeFirstLetter(word);
+
+                cloudContainer.appendChild(span);
+            });
+        }
+
+        function loadSampleData() {
+            const sampleIdeas = [
+                { groupNum: 1, type: "cause", text: "Lack of sleep" },
+                { groupNum: 1, type: "cause", text: "Stress" },
+                { groupNum: 2, type: "cause", text: "Lack of sleep" },
+                { groupNum: 2, type: "effect", text: "Missed deadlines" },
+                { groupNum: 3, type: "cause", text: "Multitasking" },
+                { groupNum: 3, type: "cause", text: "Stress" },
+                { groupNum: 4, type: "effect", text: "Forgetting names" },
+                { groupNum: 4, type: "cause", text: "Lack of sleep" },
+                { groupNum: 5, type: "cause", text: "Poor diet" },
+                { groupNum: 5, type: "effect", text: "Missed appointments" },
+                { groupNum: 6, type: "effect", text: "Anxiety" },
+                { groupNum: 7, type: "cause", text: "Distraction" },
+                { groupNum: 8, type: "cause", text: "Lack of sleep" },
+                { groupNum: 9, type: "effect", text: "Low exam scores" },
+                { groupNum: 10, type: "cause", text: "Stress" }
+            ];
+            submissions = [...submissions, ...sampleIdeas];
+            renderWordCloud();
+            renderTeacherTable();
+            updateStudentGroupView();
+        }
+
+        function clearAllData() {
+            if (confirm("Are you sure you want to clear all submitted data?")) {
+                submissions = [];
+                renderWordCloud();
+                renderTeacherTable();
+                updateStudentGroupView();
+            }
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // Run on load
+        window.onload = init;
+    </script>
+</body>
+</html>
